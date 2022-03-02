@@ -15,7 +15,7 @@ $_SESSION['message'] = $message;
 
 if( preg_match( '/^[0-9]+$/', $tel ) == false ) {
     //入力された電話番号が数値(ハイフン含む)であるか確認
-    // $telが電話番号でない場合
+    // $telが半角数字でない場合
     $error_message = "入力された電話番号をご確認ください。半角数字以外が使用されています。";
     include "error.html";
 }elseif( 50 < mb_strlen($name, 'UTF-8') ) {
