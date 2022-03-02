@@ -11,14 +11,30 @@ $message = $_SESSION['message'];
 $mysqli = new Mysqli("192.168.149.129", "user", "Cnkcj@62j", "phpform");
 
 if( $mysqli->connect_errno ) {
-	echo $mysqli->connect_errno . ' : ' . $mysqli->connect_error;
+	printf("Connect failed: %s\n", $mysqli->connect_error);
+    exit();
 }
 
 // 文字コード設定
 $mysqli->set_charset('utf8');
 
+//特殊文字をエスケープ
+$name = $mysqli->real_escape_string($name);
+$message = $mysqli->real_escape_string($message);
+
+//SQL文実行
 $query = "INSERT INTO post(subject, name, email, tel, message) VALUES ('$subject', '$name', '$email', '$tel', '$message')";
 $mysqli->query($query);
+
+//エラー処理
+if ($mysqli->error) {
+    try {   
+        throw new Exception("MySQL error $mysqli->error <br> Query:<br> $query", $msqli->errno);   
+    } catch(Exception $e ) {
+        echo "Error No: ".$e->getCode(). " - ". $e->getMessage() . "<br >";
+        echo nl2br($e->getTraceAsString());
+    }
+}
 
 // データベースとの接続解除
 $mysqli->close();
