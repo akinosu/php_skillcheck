@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PHPスキルテスト</title>
+</head>
+<body>
+  <form action="post.php" method="post">
+    <p>
+      <label class="label" for="subject">件名</label><br>
+      <select name="subject" id="subject" required>
+          <option value="">件名を選択してください</option>
+          <option value="ご意見">ご意見</option>
+          <option value="ご感想">ご感想</option>
+          <option value="その他">その他</option>
+      </select>
+    </p>
+    <p>
+      <label class="label" for="name">名前</label><br>
+      <input type="text" name="name" id="name" required>
+    </p>
+    <p>
+      <label class="label" for="email">メールアドレス</label><br>
+      <input type="email" name="email" id="email" required>
+    </p>
+    <p>
+      <label class="label" for="tel">電話番号(ハイフンなし)</label><br>
+      <input type="tel" name="tel" id="tel" required>
+    </p>
+    <p>
+      <label class="label" for="message">お問い合わせ内容</label><br>
+      <textarea name="message" id="message" cols="50" rows="5" required></textarea>
+    </p>
+      <p><input type="submit" name="submitBtn" value="入力内容確認に進む"></p>
+  </form>
+</body>
+</html>
