@@ -6,6 +6,11 @@
 </head>
 <body>
   <h1>お問い合わせ</h1>
+  <?php
+    if($error_message != null) : ?>
+    <div><p style="color: red;"><?= $error_message ?></p></div>
+  <?php endif; ?>
+  
   <form action="post.php" method="post">
     <p>
       <label class="label" for="subject">件名</label><br>
