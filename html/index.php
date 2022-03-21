@@ -50,7 +50,6 @@
     ?>
     <!-- トークンを一緒に送信 -->
     <input type="hidden" name="token" value="<?= $_SESSION["token"]; ?>">
-
     <p><input type="submit" name="submitBtn" value="入力内容確認に進む"></p>
   </form>
 </body>
