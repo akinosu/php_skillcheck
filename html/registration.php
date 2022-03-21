@@ -1,5 +1,5 @@
 <?php
-//セッションから情報を取得
+// セッションから情報を取得
 session_start();
 $subject = $_SESSION['subject'];
 $name = $_SESSION['name'];
@@ -10,35 +10,42 @@ $message = $_SESSION['message'];
 // データベース接続
 $mysqli = new Mysqli("192.168.149.129", "user", "Cnkcj@62j", "phpform");
 
-if( $mysqli->connect_errno ) {
-	printf("Connect failed: %s\n", $mysqli->connect_error);
+// データベース接続エラー時
+if ($mysqli->connect_errno) {
+    echo "データベース接続に失敗しました";
     exit();
 }
 
 // 文字コード設定
 $mysqli->set_charset('utf8');
 
-//特殊文字をエスケープ
+// 特殊文字をエスケープ
+$subject = $mysqli->real_escape_string($subject);
 $name = $mysqli->real_escape_string($name);
+$email = $mysqli->real_escape_string($email);
+$tel = $mysqli->real_escape_string($tel);
 $message = $mysqli->real_escape_string($message);
 
-//SQL文実行
-$query = "INSERT INTO post(subject, name, email, tel, message) VALUES ('$subject', '$name', '$email', '$tel', '$message')";
-$mysqli->query($query);
+// トランザクション開始
+$mysqli->begin_transaction();
 
-//エラー処理
-if ($mysqli->error) {
-    try {   
-        throw new Exception("MySQL error $mysqli->error <br> Query:<br> $query", $msqli->errno);   
-    } catch(Exception $e ) {
-        echo "Error No: ".$e->getCode(). " - ". $e->getMessage() . "<br >";
-        echo nl2br($e->getTraceAsString());
-    }
+try {
+    // insert 文を準備
+    $stmt = $mysqli->prepare("INSERT INTO post(subject, name, email, tel, message) VALUES (?,?,?,?,?)");
+    // 変数をパラメータにバインド
+    $stmt->bind_param("sssss", $subject, $name, $email, $tel, $message);
+    // SQL文を実行
+    $stmt->execute();
+    // 正常に完了したらコミット
+    $mysqli->commit();
+} catch (Exception $e) {
+    // エラー発生時、ロールバック
+    $mysqli->rollback();
+    echo "エラーが発生しました";
 }
 
 // データベースとの接続解除
 $mysqli->close();
 
-//完了後、メール送信処理へと進む
-header('Location: ./mail.php');
-?>
+// 完了後、メール送信処理へと進む
+include "mail.php";
